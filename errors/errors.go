@@ -17,6 +17,12 @@ var Errorf = fmt.Errorf
 // New is equavalent to errors.New
 var New = errors.New
 
+// As is equavalent to errors.As
+var As = errors.As
+
+// Is is equavalent to errors.Is
+var Is = errors.Is
+
 // E builds an error value from its arguments.
 // There must be at least one argument or E panics.
 // The type of each argument determines its meaning.
@@ -157,21 +163,6 @@ func Select(kind Kind, err error) (*Error, bool) {
 	}
 
 	return nil, false
-}
-
-// Is reports whether err is an *Error of the given kind
-func Is(kind Kind, err error) bool {
-	e, ok := err.(*Error)
-	if !ok {
-		return false
-	}
-	if e.Kind != Other {
-		return e.Kind == kind
-	}
-	if e.Err != nil {
-		return Is(kind, e.Err)
-	}
-	return false
 }
 
 // Op is the operation that was being performed
@@ -401,4 +392,12 @@ func (k Kind) String() string {
 	}
 
 	return "unknown error kind"
+}
+
+func (k Kind) Is(target error) bool {
+	return Is(target, k)
+}
+
+func (k Kind) Error() string {
+	return k.String()
 }
