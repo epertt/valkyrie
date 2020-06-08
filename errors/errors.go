@@ -194,6 +194,11 @@ func (e *Error) isZero() bool {
 // Is reports whether err is the same kind as the receiver, but does not unwrap
 // wrapped errors to check them. This is left to the Is function.
 func (e *Error) Is(err error) bool {
+	k, ok := err.(Kind)
+	if ok {
+		return k == e.Kind
+	}
+
 	o, ok := err.(*Error)
 	if !ok {
 		return false
